@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* Estilo da Barra Lateral */
+    .sidebar-item {
+        @apply flex items-center px-6 py-3 text-gray-400 hover:bg-slate-800 hover:text-white transition-colors duration-200;
+    }
+
+    .sidebar-item.active {
+        @apply bg-slate-800 text-blue-400 border-l-4 border-blue-400;
+    }
+
+    /* Cards de Estilo Financeiro */
+    .card-financeiro {
+        @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden;
+    }
+
+    /* Botão de Importação Customizado */
+    .btn-import {
+        @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all flex items-center gap-2;
+    }
+
+    /* Inputs Padronizados */
+    .input-financeiro {
+        @apply bg-gray-50 border-gray-200 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all;
+    }
+}
+/* Adicione isso dentro do @layer components no seu app.css */
+.badge-status {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm;
+}
+
+.badge-status-pago {
+    @apply bg-emerald-100 text-emerald-800;
+}
+
+.badge-status-processo {
+    @apply bg-blue-100 text-blue-800;
+}
+
+.dot-status {
+    @apply w-1.5 h-1.5 rounded-full mr-1.5;
+}
