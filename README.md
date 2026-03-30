@@ -22,10 +22,12 @@ A aplicação foca no processamento de alto volume de dados (**50 mil registros*
 ```bash
 git clone [https://github.com/FontesSabrina/desafio-dimensa-esteira.git](https://github.com/FontesSabrina/desafio-dimensa-esteira.git)
 cd desafio-dimensa-esteira
+
 2. Instalar dependências
 Bash
 composer install
 npm install
+
 3. Configurar Ambiente (Xampp)
 Inicie os módulos Apache e MySQL no Xampp.
 
@@ -36,6 +38,7 @@ Configure o arquivo .env com as credenciais do seu banco local.
 4. Migrar e popular o banco
 Bash
 php artisan migrate --seed
+
 5. Iniciar servidor
 Bash
 php artisan serve
