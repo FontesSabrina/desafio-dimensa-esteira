@@ -23,17 +23,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Detalhes da Operação
         Route::get('/{id}', [OperacaoController::class, 'show'])->name('show');
 
-        // --- AJUSTE AQUI: Mude de POST para PATCH ---
-        // Isso combina com o @method('PATCH') que colocamos no formulário da view
+        // Atualização de Status
         Route::patch('/{id}/status', [OperacaoController::class, 'atualizarStatus'])->name('atualizarStatus');
     });
 
-    // Rota de redirecionamento do Dashboard padrão do Breeze
+    // Redirecionamento para o Dashboard
     Route::get('/dashboard', function () {
         return redirect()->route('operacoes.index');
     })->name('dashboard');
 
-    // --- ROTAS DE PERFIL ---
+    // ROTAS DE PERFIL
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -3,10 +3,10 @@
 namespace App\Imports;
 
 use App\Services\OperacaoService;
-use Maatwebsite\Excel\Concerns\OnEachRow; // Mudamos para OnEachRow para melhor controle
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithStartRow;
-use Maatwebsite\Excel\Concerns\WithChunkReading; // Essencial para performance
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Row;
 use Illuminate\Support\Facades\Log;
 
@@ -15,50 +15,51 @@ class OperacoesImport implements OnEachRow, WithCustomCsvSettings, WithStartRow,
     protected $service;
 
     public function __construct() {
-        // Injetando o service otimizado
+        // Injetando o service que já contém a lógica de cálculo corrigida
         $this->service = new OperacaoService();
     }
 
+    /**
+     * Começamos na linha 2 para saltar o cabeçalho (Código;Cliente;CPF...)
+     */
     public function startRow(): int {
         return 2;
     }
 
+
+public function onRow(Row $row)
+{
+    $data = $row->toArray();
+
+    // 1. Verifique se você APAGOU o dd($data) que estava aqui.
+    // Se o dd() continuar aqui, o código para e nunca chega no Service!
+
+    try {
+        $this->service->criarOperacaoComParcelas($data);
+    } catch (\Exception $e) {
+        // Isso aqui vai cuspir o erro real no seu terminal ou no log
+        // Pode ser que falte uma coluna no banco ou o CPF seja longo demais
+        dump("Erro na linha " . $row->getIndex() . ": " . $e->getMessage());
+        Log::error($e->getMessage());
+    }
+}
+
     /**
-     * Usamos onRow em vez de model() porque o Service já cuida
-     * da criação de múltiplos registros (Operação + Parcelas + Logs).
+     * Configurações de leitura do CSV
      */
-    public function onRow(Row $row)
-    {
-        $data = $row->toArray();
+    public function getCsvSettings(): array {
+        return [
+            'delimiter'        => ';', // Ponto e vírgula conforme o ficheiro original
+            'input_encoding'   => 'UTF-8',
 
-        // Validação básica de coluna
-        if (!isset($data[15])) {
-            Log::warning("Linha " . $row->getIndex() . " ignorada: CPF (índice 15) não encontrado.");
-            return;
-        }
-
-        try {
-            // Chama o service que já faz o insert das parcelas em lote (Batch)
-            $this->service->criarOperacaoComParcelas($data);
-        } catch (\Exception $e) {
-            // Em vez de dd(), usamos Log para a importação não parar no meio se uma linha der erro
-            Log::error("Erro ao importar linha " . $row->getIndex() . ": " . $e->getMessage());
-        }
+        ];
     }
 
     /**
-     * chunkSize: Define quantas linhas o Laravel lê por vez.
-     * 1000 é um excelente número para performance em 127.0.0.1
+     * Tamanho do bloco para não estourar a memória RAM
      */
     public function chunkSize(): int
     {
         return 1000;
-    }
-
-    public function getCsvSettings(): array {
-        return [
-            'delimiter' => ';',
-            'input_encoding' => 'UTF-8',
-        ];
     }
 }

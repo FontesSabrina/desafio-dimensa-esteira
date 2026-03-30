@@ -58,8 +58,8 @@ class OperacaoController extends Controller
 
         // Eager loading de parcelas e ordenação por data de criação
         $operacoes = $query->with('parcelas')
-                           ->orderBy('created_at', 'desc')
-                           ->paginate(15);
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(15);
 
         // MUDANÇA: Passando a variável $conveniadas para a view
         return view('operacoes.index', compact('operacoes', 'conveniadas'));

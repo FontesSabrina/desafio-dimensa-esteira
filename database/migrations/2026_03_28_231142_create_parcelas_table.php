@@ -6,31 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    public function up(): void
+    {
+        Schema::create('parcelas', function (Blueprint $table) {
+            $table->id();
 
-public function up()
-{
-    Schema::create('parcelas', function (Blueprint $table) {
-        $table->id();
+            // Relacionamento - Indexado para performance em alto volume
+            $table->foreignId('operacao_id')->index()->constrained('operacoes')->onDelete('cascade');
 
+            // Dados da Parcela
+            $table->integer('numero_parcela');
+            $table->date('data_vencimento')->index();
+            $table->date('data_pagamento')->nullable();
+            $table->decimal('valor_parcela', 15, 2);
 
-        $table->foreignId('operacao_id')
-            ->index() // buscar rapido por operação
-            ->constrained('operacoes')
-            ->onDelete('cascade');
+            // Cálculos Financeiros (Requisito: Valor Presente)
+            $table->decimal('valor_presente', 15, 2)->nullable();
 
-        $table->integer('numero_parcela');
-        $table->date('data_vencimento')->index(); //  filtros de "Vencidos"
-        $table->date('data_pagamento')->nullable(); // Para controle de baixa
+            // Controle de Status (Pago / Pendente)
+            $table->string('status')->default('PENDENTE')->index();
 
-        $table->decimal('valor_parcela', 15, 2);
-
-        //  guardar o valor presente calculado
-        $table->decimal('valor_presente', 15, 2)->nullable();
-
-        $table->string('status')->default('PENDENTE')->index();
-        $table->timestamps();
-    });
-}
+            $table->timestamps();
+        });
+    }
 
     public function down(): void
     {

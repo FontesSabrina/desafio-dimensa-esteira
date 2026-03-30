@@ -3,43 +3,123 @@
 @tailwind utilities;
 
 @layer components {
-    /* Estilo da Barra Lateral */
+    /* 1. LAYOUT & NAVEGAÇÃO */
     .sidebar-item {
         @apply flex items-center px-6 py-3 text-gray-400 hover:bg-slate-800 hover:text-white transition-colors duration-200;
     }
-
     .sidebar-item.active {
-        @apply bg-slate-800 text-blue-400 border-l-4 border-blue-400;
+        @apply bg-slate-800 text-indigo-400 border-l-4 border-indigo-400;
     }
 
-    /* Cards de Estilo Financeiro */
+    /* 2. CONTAINERS & CARDS */
     .card-financeiro {
-        @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden;
+        @apply p-6 mb-8 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden;
+    }
+    .card-title {
+        @apply text-sm font-black text-indigo-900 uppercase tracking-widest mb-4 flex items-center gap-2;
     }
 
-    /* Botão de Importação Customizado */
-    .btn-import {
-        @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all flex items-center gap-2;
+    /* 3. SISTEMA DE FILTROS & FORMULÁRIOS */
+    .grid-filters {
+        @apply grid grid-cols-1 md:grid-cols-6 gap-4 items-end;
     }
-
-    /* Inputs Padronizados */
+    .filter-group {
+        @apply space-y-1;
+    }
+    .filter-label {
+        @apply block text-[10px] font-black text-gray-400 uppercase ml-1;
+    }
     .input-financeiro {
-        @apply bg-gray-50 border-gray-200 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all;
+        @apply w-full border-gray-100 bg-gray-50 rounded-xl text-sm font-bold text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all;
+    }
+
+    /* 4. BOTÕES */
+    .btn-filter {
+        @apply bg-indigo-600 hover:bg-indigo-700 text-white w-full h-[42px] rounded-xl font-black text-[11px] uppercase tracking-tighter flex items-center justify-center gap-2 transition-all shadow-md shadow-indigo-100;
+    }
+    .btn-import {
+        @apply bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center gap-2 text-xs uppercase tracking-widest;
+    }
+    .btn-action {
+        @apply inline-flex items-center px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg font-black text-[10px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all shadow-sm;
+    }
+
+    /* 5. TABELA FINANCEIRA */
+    .table-financeira {
+        @apply min-w-full divide-y divide-gray-100;
+    }
+    .table-financeira thead th {
+        @apply px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50/50;
+    }
+    .table-financeira tbody td {
+        @apply px-6 py-4 whitespace-nowrap text-sm text-gray-600;
+    }
+    .table-row-hover {
+        @apply hover:bg-gray-50/80 transition-colors duration-150;
+    }
+    .td-codigo {
+        @apply font-black text-indigo-600 tracking-tight;
+    }
+    .client-name {
+        @apply font-bold text-gray-800;
+    }
+    .client-cpf {
+        @apply text-[10px] font-mono text-gray-400;
+    }
+
+    /* 6. STATUS & INDICADORES */
+    .badge-status {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm border;
+    }
+    .badge-status-pago {
+        @apply bg-emerald-100 text-emerald-800 border-emerald-200;
+    }
+    .badge-status-processo {
+        @apply bg-indigo-100 text-indigo-800 border-indigo-200;
+    }
+    .dot-status {
+        @apply w-1.5 h-1.5 rounded-full mr-1.5;
+    }
+
+    /* 7. UTILITÁRIOS DE TABELA */
+    .table-empty-state {
+        @apply px-6 py-12 text-center text-gray-400 italic uppercase font-black text-xs opacity-50;
+    }
+    .pagination-container {
+        @apply p-6 border-t border-gray-50 bg-gray-50/20;
     }
 }
-/* Adicione isso dentro do @layer components no seu app.css */
-.badge-status {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm;
+/* Ajuste para o container de importação */
+.import-zone {
+    @apply bg-indigo-50/50 p-1 rounded-3xl border-2 border-dashed border-indigo-200;
 }
+@layer components {
+    /* Alertas de Feedback */
+    .alert-success {
+        @apply p-4 mb-4 text-sm text-emerald-700 bg-emerald-50 rounded-xl border border-emerald-100 font-bold shadow-sm;
+    }
 
-.badge-status-pago {
-    @apply bg-emerald-100 text-emerald-800;
+    .alert-danger {
+        @apply p-4 mb-4 text-sm text-red-700 bg-red-50 rounded-xl border border-red-100 font-bold shadow-sm;
+    }
+
+    /* Grid de Informações (o que sobrou no show) */
+    .info-grid {
+        @apply grid grid-cols-2 gap-y-6 mt-4;
+    }
 }
+@layer components {
+    /* Estilo para a Logo Central */
+    .welcome-logo-container {
+        @apply h-20 w-20 bg-indigo-600 rounded-2xl shadow-lg flex items-center justify-center mb-6 transition-transform hover:scale-105;
+    }
 
-.badge-status-processo {
-    @apply bg-blue-100 text-blue-800;
-}
+    /* Estilo para o Texto de Boas-Vindas */
+    .welcome-title {
+        @apply text-4xl font-black text-gray-900 dark:text-white mb-2 tracking-tighter uppercase;
+    }
 
-.dot-status {
-    @apply w-1.5 h-1.5 rounded-full mr-1.5;
+    .welcome-subtitle {
+        @apply text-lg text-gray-600 dark:text-gray-400 max-w-lg font-medium italic;
+    }
 }

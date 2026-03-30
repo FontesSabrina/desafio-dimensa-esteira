@@ -8,6 +8,7 @@ use App\Helpers\CurrencyHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OperacaoService
 {
@@ -29,10 +30,20 @@ class OperacaoService
         return self::CONVENIADAS[$codigo] ?? 'Conveniada Desconhecida';
     }
 
+    /**
+     * Cria a operação e as parcelas seguindo as regras do PDF
+     */
     public function criarOperacaoComParcelas(array $row)
     {
         $codigoConveniada = (int) ($row[10] ?? 1);
-        $dataCriacao = isset($row[7]) ? Carbon::parse($row[7]) : now();
+
+        // TRATAMENTO DE DATA DO EXCEL: Converte o número (ex: 46106) para objeto Carbon
+        $dataRaw = $row[7] ?? null;
+        if (is_numeric($dataRaw)) {
+            $dataCriacao = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($dataRaw));
+        } else {
+            $dataCriacao = $dataRaw ? Carbon::parse($dataRaw) : now();
+        }
 
         return DB::transaction(function () use ($row, $codigoConveniada, $dataCriacao) {
             $operacao = Operacao::create([
@@ -54,6 +65,7 @@ class OperacaoService
                 'email'               => $row[19] ?? null,
             ]);
 
+            // Regra pág. 7: Registro obrigatório em log [cite: 196]
             $operacao->logs()->create([
                 'status_anterior' => null,
                 'status_novo'     => Operacao::STATUS_DIGITANDO,
@@ -66,17 +78,51 @@ class OperacaoService
         });
     }
 
-    public function alterarStatus(Operacao $operacao, string $novoStatus)
+    /**
+     * Gera parcelas com intervalo exato de 30 dias [cite: 222]
+     */
+    private function gerarParcelasMensais(Operacao $operacao, array $row)
     {
-        // REGRA DO PDF: Se já foi pago, não altera mais
-        if ($operacao->status === Operacao::STATUS_PAGO_AO_CLIENTE) {
-            throw new \Exception("Esta operação já foi finalizada e não pode ser alterada.");
+        $valorParcela = CurrencyHelper::toFloat($row[13] ?? 0);
+
+        // Tratamento de data para a base das parcelas
+        $dataBaseRaw = $row[12] ?? null;
+        if (is_numeric($dataBaseRaw)) {
+            $dataBase = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($dataBaseRaw));
+        } else {
+            $dataBase = !empty($dataBaseRaw) ? Carbon::parse($dataBaseRaw) : now();
         }
 
-        // REGRAS DE TRANSIÇÃO DO PDF
+        $parcelasData = [];
+        $now = now();
+
+        for ($i = 1; $i <= $operacao->quantidade_parcelas; $i++) {
+            $parcelasData[] = [
+                'operacao_id'     => $operacao->id,
+                'numero_parcela'  => $i,
+                // Regra pág. 8: Intervalo de 30 dias [cite: 222]
+                'data_vencimento' => $dataBase->copy()->addDays(($i - 1) * 30)->format('Y-m-d'),
+                'valor_parcela'   => $valorParcela,
+                'status'          => 'PENDENTE',
+                'created_at'      => $now,
+                'updated_at'      => $now,
+            ];
+        }
+        Parcela::insert($parcelasData);
+    }
+
+    /**
+     * Altera o status respeitando a esteira de operações [cite: 187, 188]
+     */
+    public function alterarStatus(Operacao $operacao, string $novoStatus)
+    {
+        if ($operacao->status === Operacao::STATUS_PAGO_AO_CLIENTE) {
+            throw new \Exception(" Operação finalizada não pode ser alterada.");
+        }
+
         if ($novoStatus === Operacao::STATUS_PAGO_AO_CLIENTE) {
             if ($operacao->status !== Operacao::STATUS_APROVADA) {
-                throw new \Exception("A operação precisa estar APROVADA para ser paga.");
+                throw new \Exception("A operação precisa estar APROVADA.");
             }
 
             $passouPorAssinatura = $operacao->logs()
@@ -84,21 +130,19 @@ class OperacaoService
                 ->exists();
 
             if (!$passouPorAssinatura) {
-                throw new \Exception("A operação precisa ter a ASSINATURA CONCLUÍDA antes do pagamento.");
+                throw new \Exception("Necessário ter ASSINATURA CONCLUÍDA.");
             }
         }
 
         return DB::transaction(function () use ($operacao, $novoStatus) {
             $statusAnterior = $operacao->status;
-
-            // ALTERAÇÃO REAL: Atualizamos o campo no objeto e salvamos
             $operacao->status = $novoStatus;
 
             if ($novoStatus === Operacao::STATUS_PAGO_AO_CLIENTE) {
-                $operacao->data_pagamento = now();
+                $operacao->data_pagamento = now(); // Atualiza data conforme pág. 7 [cite: 193]
             }
 
-            $operacao->save(); // Garante a mudança no Status Atual
+            $operacao->save();
 
             $operacao->logs()->create([
                 'status_anterior' => $statusAnterior,
@@ -111,46 +155,36 @@ class OperacaoService
         });
     }
 
-    private function gerarParcelasMensais(Operacao $operacao, array $row)
-    {
-        $valorParcela = CurrencyHelper::toFloat($row[13] ?? 0);
-        $dataBase = !empty($row[12]) ? Carbon::parse($row[12]) : now();
-        $parcelasData = [];
-        $now = now();
-
-        for ($i = 1; $i <= $operacao->quantidade_parcelas; $i++) {
-            $parcelasData[] = [
-                'operacao_id'     => $operacao->id,
-                'numero_parcela'  => $i,
-                'data_vencimento' => $dataBase->copy()->addMonths($i - 1)->format('Y-m-d'),
-                'valor_parcela'   => $valorParcela,
-                'status'          => 'PENDENTE',
-                'created_at'      => $now,
-                'updated_at'      => $now,
-            ];
-        }
-        Parcela::insert($parcelasData);
-    }
-
+    /**
+     * Calcula o Valor Presente conforme as fórmulas das páginas 5 e 6 [cite: 146, 156]
+     */
     public function calcularVP(Operacao $op)
     {
-        $dataHoje = now();
+        $dataHoje = now()->startOfDay();
         $vpTotal = 0;
-        $taxaJuros = (float)($op->taxa_juros / 100);
-        $taxaMulta = (float)($op->taxa_multa / 100);
-        $taxaMora  = (float)($op->taxa_mora / 100);
 
-        foreach ($op->parcelas as $p) {
-            $venc = Carbon::parse($p->data_vencimento);
+        $parcelas = $op->relationLoaded('parcelas') ? $op->parcelas : $op->parcelas()->get();
+
+        $i_taxa = (float)($op->taxa_juros / 100);
+        $m_multa = (float)($op->taxa_multa / 100);
+        $j_mora  = (float)($op->taxa_mora / 100);
+
+        foreach ($parcelas as $p) {
+            $venc = Carbon::parse($p->data_vencimento)->startOfDay();
             $d = $dataHoje->diffInDays($venc, false);
             $V = (float)$p->valor_parcela;
 
             if ($d < 0) {
-                $vpTotal += $V + ($V * $taxaMulta) + ($V * ($taxaMora / 30) * abs($d));
+                // Fórmula Atraso (Pág. 5) [cite: 146]
+                $diasAtraso = abs($d);
+                $vpTotal += $V + ($V * $m_multa) + ($V * ($j_mora / 30) * $diasAtraso);
             } else {
-                $vpTotal += $V / pow((1 + $taxaJuros), ($d / 30));
+                // Fórmula Adiantamento (Pág. 6) [cite: 156]
+                $expoente = $d / 30;
+                $vpTotal += $V / pow((1 + $i_taxa), $expoente);
             }
         }
+
         return $vpTotal;
     }
 }

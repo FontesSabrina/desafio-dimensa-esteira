@@ -10,21 +10,6 @@
     <body class="bg-slate-50 dark:bg-gray-900 antialiased">
         <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen selection:bg-blue-500 selection:text-white">
 
-            {{-- Navegação Superior --}}
-            @if (Route::has('login'))
-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Entrar</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Registrar</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
             {{-- Conteúdo Central --}}
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
                 <div class="flex flex-col items-center justify-center text-center">
@@ -43,11 +28,10 @@
                         Sistema inteligente de gestão de operações financeiras e esteira de crédito.
                     </p>
 
-                    <div class="mt-10">
-                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all">
-                            Acessar Plataforma
-                        </a>
-                    </div>
+                <a href="{{ route('login') }}" class="btn-import">
+                    Acessar Plataforma
+                </a>
+
                 </div>
 
                 <div class="mt-16 text-center text-sm text-gray-500">
