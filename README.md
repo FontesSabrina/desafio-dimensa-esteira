@@ -1,50 +1,64 @@
-# 🚀 Gestão de Esteira Ativa - Desafio Dimensa
+Entendi perfeitamente, amiga! Você quer o texto "limpo", sem aquelas formatações de código (Markdown), mas com as linhas separando tudo para ficar bem organizado no visual.
 
-Este sistema foi desenvolvido como parte do processo seletivo para a posição de **Analista I de Desenvolvimento de Software na Dimensa**.
+Aqui está o texto pronto para você copiar:
 
-A aplicação foca no processamento de alto volume de dados (**50 mil registros**) e na gestão eficiente de operações financeiras.
+🚀 Gestão de Esteira Ativa - Desafio Dimensa
 
---------------------------------------------------------------------------------
+Este sistema foi desenvolvido como parte do processo seletivo para a posição de Analista I de Desenvolvimento de Software na Dimensa.
 
-## 🛠️ Tecnologias Utilizadas
+A aplicação foca no processamento de alto volume de dados (50 mil registros) e na gestão eficiente de operações financeiras.
 
-* **Framework:** PHP 8 / Laravel 12
-* **Banco de Dados:** MySQL
-* **Frontend:** Blade Engines, Tailwind CSS e Javascript
-* **Servidor Local:** Xampp (Apache/MySQL) e PHP Artisan
-* **Ferramentas:** Laravel Excel (para importação de alto volume)
+🛠️ Tecnologias Utilizadas
 
---------------------------------------------------------------------------------
+• Framework: PHP 8 / Laravel 12
+• Banco de Dados: MySQL
+• Frontend: Blade Engines, Tailwind CSS e Javascript
+• Servidor Local: Xampp (Apache/MySQL) e PHP Artisan
+• Ferramentas: Laravel Excel (para importação de alto volume)
 
-## 📥 Como Executar o Projeto
+📥 Como Executar o Projeto
 
-### 1. Clonar o repositório
-```bash
-git clone [https://github.com/FontesSabrina/desafio-dimensa-esteira.git](https://github.com/FontesSabrina/desafio-dimensa-esteira.git)
+Clonar o repositório:
+git clone https://github.com/FontesSabrina/desafio-dimensa-esteira.git
 cd desafio-dimensa-esteira
-2. Instalar dependências
-Bash
+
+Instalar dependências:
 composer install
 npm install
-3. Configurar Ambiente (Xampp)
-Inicie os módulos Apache e MySQL no Xampp.
 
-Crie o banco de dados: dimensa_db.
+Compilar os ativos (CSS/JS):
 
-Configure o arquivo .env com as credenciais do seu banco local.
+Desenvolvimento
+npm run dev
 
-4. Migrar e popular o banco
-Bash
+Produção
+npm run build
+
+Configurar Ambiente (Xampp):
+• Inicie os módulos Apache e MySQL no Xampp.
+• Crie o banco de dados: dimensa_db.
+
+Configurar arquivo .env:
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dimensa_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+Migrar e popular o banco:
 php artisan migrate --seed
-5. Iniciar servidor
-Bash
-php artisan serve
-🔐 Credenciais de Acesso (Seed)
-Usuário/E-mail: admin@admin.com
 
-Senha: 12345678
+Iniciar servidor:
+php artisan serve
+
+🔐 Credenciais de Acesso (Seed)
+
+• Usuário/E-mail: admin@admin.com
+• Senha: 12345678
 
 📊 Como Executar a Importação
+
 O sistema foi otimizado para suportar a carga de 50 mil registros:
 
 Acesse a plataforma com as credenciais acima.
@@ -58,25 +72,23 @@ Clique em "Processar Dados".
 ✔️ O sistema utiliza leitura em blocos (chunks) para garantir performance.
 
 🧠 Decisões Técnicas Tomadas
-Cálculo de Valor Presente (VP): Implementado seguindo rigorosamente as fórmulas de atraso e adiantamento solicitadas.
 
-Logs de Auditoria: Registro de todas as mudanças de status para total rastreabilidade.
-
-Regras de Status: O status "PAGO AO CLIENTE" só é liberado se a proposta estiver APROVADA e com ASSINATURA CONCLUÍDA.
-
-Performance: Uso de paginação e consultas otimizadas para garantir fluidez com 50 mil registros.
+• Cálculo de Valor Presente (VP): Implementado seguindo rigorosamente fórmulas de atraso e adiantamento.
+• Logs de Auditoria: Registro de todas as mudanças de status para rastreabilidade.
+• Regras de Status: O status "PAGO AO CLIENTE" só ocorre se a proposta estiver APROVADA e já tiver passado por ASSINATURA CONCLUÍDA.
+• Performance: Uso de paginação e consultas otimizadas para lidar com os 50 mil registros.
 
 ⚠️ Limitações da Solução
-Processamento Síncrono: A importação ocorre de forma síncrona. Em um cenário de produção real, o ideal seria utilizar Queues (filas) do Laravel.
 
-Interface: O foco principal do desenvolvimento foi a lógica de negócio e o atendimento aos critérios técnicos do desafio.
+• Processamento Síncrono: A importação ocorre de forma síncrona. Em produção, o ideal seria utilizar Queues (filas).
+• Interface: O foco principal foi a lógica de negócio e os critérios técnicos do desafio.
 
 📈 Melhorias Futuras
-[ ] Implementação de Testes Automatizados (Pest ou PHPUnit).
 
-[ ] Dashboard com gráficos de indicadores financeiros.
-
-[ ] Dockerização completa do ambiente.
+[ ] Testes automatizados (principalmente cálculo de VP).
+[ ] Dashboard com gráficos e indicadores.
+[ ] Dockerização com Docker Compose.
 
 👩‍💻 Autora
+
 Desenvolvido por Sabrina Fontes
