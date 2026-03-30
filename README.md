@@ -1,6 +1,6 @@
-===========================================
+======================================
 🚀 Gestão de Esteira Ativa - Desafio Dimensa
-===========================================
+======================================
 
 Este sistema foi desenvolvido como parte do processo seletivo para a posição de **Analista I de Desenvolvimento de Software na Dimensa**.
 
@@ -28,14 +28,14 @@ A aplicação foca no processamento de alto volume de dados (50 mil registros) e
 
    git clone https://github.com/FontesSabrina/desafio-dimensa-esteira.git
    cd desafio-dimensa-esteira
-
+--------------------------------------------------------------------------------
 **2. Instalar dependências:**
 
 .. code-block:: bash
 
    composer install
    npm install
-
+--------------------------------------------------------------------------------
 **3. Compilar os ativos (CSS/JS):**
 
 * **Desenvolvimento:** ``npm run dev``
@@ -47,7 +47,7 @@ A aplicação foca no processamento de alto volume de dados (50 mil registros) e
 
 * Inicie os módulos Apache e MySQL no Xampp.
 * Crie o banco de dados: **dimensa_db**
-
+--------------------------------------------------------------------------------
 **5. Configurar arquivo .env:**
 
 .. code-block:: text
@@ -66,7 +66,7 @@ A aplicação foca no processamento de alto volume de dados (50 mil registros) e
 .. code-block:: bash
 
    php artisan migrate --seed
-
+--------------------------------------------------------------------------------
 **7. Iniciar servidor:**
 
 .. code-block:: bash
@@ -118,7 +118,6 @@ O sistema foi otimizado para suportar a carga de 50 mil registros:
 📈 Melhorias Futuras
 -------------------
 
-* [ ] Testes automatizados (principalmente cálculo de VP).
 * [ ] Dashboard com gráficos e indicadores.
 * [ ] Dockerização com Docker Compose.
 
