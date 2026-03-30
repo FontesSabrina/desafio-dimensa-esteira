@@ -77,3 +77,6 @@ Interface: O foco principal do desenvolvimento foi a lógica de negócio e o ate
 [ ] Dashboard com gráficos de indicadores financeiros.
 
 [ ] Dockerização completa do ambiente.
+
+👩‍💻 Autora
+Desenvolvido por Sabrina Fontes
