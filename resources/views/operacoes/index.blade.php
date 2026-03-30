@@ -19,7 +19,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
-            {{-- SEÇÃO DE IMPORTAÇÃO --}}
+            {{-- IMPORTAÇÃO --}}
             <div class="card-financeiro !p-1 border-2 border-dashed border-indigo-200 bg-indigo-50/50">
                 <div class="bg-white p-6 rounded-[1.4rem]">
                     <form action="{{ route('operacoes.importar') }}" method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -39,14 +39,25 @@
                 </div>
             </div>
 
-            {{-- SEÇÃO DE FILTROS --}}
             @include('operacoes.partials._filters')
 
-            {{-- SEÇÃO DA TABELA --}}
             <div class="card-financeiro !p-0">
                 @include('operacoes.partials._table')
             </div>
 
         </div>
     </div>
+
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.select2-conveniada').select2({
+                    placeholder: "Selecione...",
+                    width: '100%'
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>

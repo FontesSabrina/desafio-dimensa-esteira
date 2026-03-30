@@ -1,6 +1,5 @@
 <x-app-layout>
     <div class="flex min-h-screen bg-gray-50">
-        {{-- Menu Lateral --}}
         <x-sidebar />
 
         <main class="flex-1">
@@ -16,7 +15,6 @@
             <div class="p-8">
                 <div class="max-w-7xl mx-auto">
 
-                    {{-- Área de Importação --}}
                     <div class="card-financeiro !mb-6">
                         <div class="flex items-center gap-2 mb-6">
                             <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +36,6 @@
                         <p class="mt-3 text-[10px] font-bold text-gray-400 italic">* Formatos aceitos: .xlsx, .xls e .csv padrão.</p>
                     </div>
 
-                    {{-- Mensagens de Feedback --}}
                     @if(session('status'))
                         <div class="alert-success">
                             {{ session('status') }}
@@ -55,12 +52,10 @@
                         </div>
                     @endif
 
-                    {{-- Monitoramento --}}
                     <div class="card-financeiro !p-0">
                         <div class="px-8 py-5 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
                             <h3 class="card-title !mb-0">Monitoramento de Propostas</h3>
 
-                            {{-- Botão de Relatório --}}
                             <a href="{{ route('operacoes.exportar') }}" class="badge-status bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-600 hover:text-white transition-all py-2 px-4 gap-2">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -69,12 +64,10 @@
                             </a>
                         </div>
 
-                        {{-- Filtros --}}
                         <div class="p-8 border-b border-gray-50 bg-white">
                             @include('operacoes.partials._filters')
                         </div>
 
-                        {{-- Tabela --}}
                         <div class="overflow-x-auto">
                             @include('operacoes.partials._table', ['operacoes' => $operacoes])
                         </div>

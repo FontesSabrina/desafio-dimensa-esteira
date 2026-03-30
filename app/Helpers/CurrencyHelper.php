@@ -4,19 +4,21 @@ namespace App\Helpers;
 
 class CurrencyHelper
 {
+    public static function toFloat($value): float
+    {
+        if (empty($value)) return 0.0;
 
- public static function toFloat($value): float
-{
-    if (empty($value)) return 0.0;
-    if (is_numeric($value)) return (float) $value;
+        if (is_numeric($value)) return (float) $value;
 
-    // Se tiver vírgula, tratamos como padrão brasileiro (1.200,50)
-    if (str_contains($value, ',')) {
-        $cleanValue = str_replace('.', '', $value); // Tira o ponto de milhar
-        $cleanValue = str_replace(',', '.', $cleanValue); // Troca a vírgula decimal por ponto
-        return (float) $cleanValue;
+        $cleanValue = str_replace(['R$', ' ', "\xA0"], '', $value);
+
+        if (str_contains($cleanValue, ',')) {
+            $cleanValue = str_replace('.', '', $cleanValue);
+            $cleanValue = str_replace(',', '.', $cleanValue);
+        }
+
+        $finalValue = preg_replace('/[^0-9.]/', '', $cleanValue);
+
+        return (float) ($finalValue ?: 0.0);
     }
-
-    return (float) $value;
-}
 }

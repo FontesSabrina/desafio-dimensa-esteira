@@ -10,7 +10,6 @@ class Operacao extends Model
 
     protected $guarded = [];
 
-    // Constantes de Status conforme o desafio Dimensa
     const STATUS_DIGITANDO = 'DIGITANDO';
     const STATUS_PRE_ANALISE = 'PRÉ-ANÁLISE';
     const STATUS_EM_ANALISE = 'EM ANÁLISE';

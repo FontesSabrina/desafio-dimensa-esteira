@@ -17,66 +17,32 @@ class OperacaoController extends Controller
         $this->service = $service;
     }
 
-    /**
-     * Centralizamos a lógica de filtros para usar tanto na listagem quanto na exportação
-     */
-    private function aplicarFiltros(Request $request)
-    {
-        $query = Operacao::query();
-
-        // Filtros Exigidos pelo Edital
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('codigo')) {
-            $query->where('codigo_operacao', 'like', '%' . $request->codigo . '%');
-        }
-
-        if ($request->filled('produto')) {
-            // Mudança para 'like' permite buscar por parte do nome do produto (Ex: "Consig" acha "Consignado")
-            $query->where('produto', 'like', '%' . $request->produto . '%');
-        }
-
-        if ($request->filled('conveniada')) {
-            $query->where('conveniada_nome', 'like', '%' . $request->conveniada . '%');
-        }
-
-        if ($request->filled('cpf')) {
-            $query->where('cpf', 'like', '%' . $request->cpf . '%');
-        }
-
-        return $query;
-    }
-
     public function index(Request $request)
     {
-        $query = $this->aplicarFiltros($request);
+        $query = Operacao::query()
+            ->when($request->status, fn($q) => $q->where('status', $request->status))
+            ->when($request->codigo, fn($q) => $q->where('codigo_operacao', 'like', '%' . $request->codigo . '%'))
+            ->when($request->produto, fn($q) => $q->where('produto', 'like', '%' . $request->produto . '%'))
+            ->when($request->conveniada, fn($q) => $q->where('conveniada_nome', 'like', '%' . $request->conveniada . '%'))
+            ->when($request->cpf, fn($q) => $q->where('cpf', 'like', '%' . $request->cpf . '%'));
 
-        // MUDANÇA: Busca nomes únicos de conveniadas para alimentar o <datalist> (Autocomplete)
         $conveniadas = Operacao::distinct()->orderBy('conveniada_nome')->pluck('conveniada_nome');
 
-        // Eager loading de parcelas e ordenação por data de criação
         $operacoes = $query->with('parcelas')
                         ->orderBy('created_at', 'desc')
                         ->paginate(15);
 
-        // MUDANÇA: Passando a variável $conveniadas para a view
         return view('operacoes.index', compact('operacoes', 'conveniadas'));
     }
 
     public function importar(Request $request)
     {
-        ini_set('memory_limit', '1024M');
-        ini_set('max_execution_time', 600);
+        $request->validate([
+            'planilha' => 'required|mimes:xlsx,xls,csv,txt'
+        ]);
 
         try {
-            $request->validate([
-                'planilha' => 'required|mimes:xlsx,xls,csv,txt'
-            ]);
-
             Excel::import(new OperacoesImport, $request->file('planilha'));
-
             return back()->with('status', 'Importação concluída com sucesso!');
         } catch (\Exception $e) {
             return back()->withErrors(['erro' => 'Falha na importação: ' . $e->getMessage()]);
@@ -86,7 +52,9 @@ class OperacaoController extends Controller
     public function show($id)
     {
         $operacao = Operacao::with(['parcelas', 'logs'])->findOrFail($id);
+
         $valorPresente = $this->service->calcularVP($operacao);
+
         return view('operacoes.show', compact('operacao', 'valorPresente'));
     }
 
@@ -104,37 +72,34 @@ class OperacaoController extends Controller
 
     public function exportar(Request $request)
     {
-        $query = $this->aplicarFiltros($request)->with('parcelas');
+        $fileName = 'relatorio_' . now()->format('d_m_Y_H_i') . '.csv';
 
-        $fileName = 'relatorio_financeiro_' . now()->format('d_m_Y_H_i') . '.csv';
-
-        return response()->stream(function() use($query) {
+        return response()->streamDownload(function() use($request) {
             $file = fopen('php://output', 'w');
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM para Excel ler acentos corretamente
+            fputs($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
-            fputcsv($file, ['Código', 'Cliente', 'CPF', 'Valor Operação', 'Status', 'Produto', 'Conveniada', 'Valor Presente'], ';');
+            fputcsv($file, [
+                'Código', 'Cliente', 'CPF', 'Valor', 'Status', 'Produto', 'Conveniada', 'Valor Presente'
+            ], ';');
 
-            $query->chunk(1000, function($operacoes) use($file) {
-                foreach ($operacoes as $op) {
-                    $vp = $this->service->calcularVP($op);
-
-                    fputcsv($file, [
-                        $op->codigo_operacao,
-                        $op->nome,
-                        $op->cpf,
-                        number_format($op->valor_requerido, 2, ',', '.'),
-                        $op->status,
-                        $op->produto,
-                        $op->conveniada_nome,
-                        number_format($vp, 2, ',', '.')
-                    ], ';');
-                }
-            });
+            Operacao::query()
+                ->when($request->status, fn($q) => $q->where('status', $request->status))
+                ->chunk(1000, function($operacoes) use($file) {
+                    foreach ($operacoes as $op) {
+                        fputcsv($file, [
+                            $op->codigo_operacao,
+                            $op->nome,
+                            $op->cpf,
+                            number_format($op->valor_requerido, 2, ',', '.'),
+                            $op->status,
+                            $op->produto,
+                            $op->conveniada_nome,
+                            number_format($this->service->calcularVP($op), 2, ',', '.')
+                        ], ';');
+                    }
+                });
 
             fclose($file);
-        }, 200, [
-            "Content-type" => "text/csv; charset=utf-8",
-            "Content-Disposition" => "attachment; filename=$fileName",
-        ]);
+        }, $fileName);
     }
 }

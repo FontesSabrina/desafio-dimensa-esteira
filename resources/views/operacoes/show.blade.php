@@ -13,7 +13,6 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            {{-- FEEDBACK DE SUCESSO/ERRO --}}
             @if(session('status'))
                 <div class="alert-success">
                     {{ session('status') }}
@@ -26,7 +25,7 @@
                 </div>
             @endif
 
-            {{-- INDICADORES FINANCEIROS --}}
+            {{-- RESUMO FINANCEIRO --}}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="card-financeiro !mb-0">
                     <p class="filter-label">Valor Requerido</p>
@@ -47,7 +46,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {{-- CARD: DADOS DO CLIENTE --}}
                 <div class="card-financeiro !mb-0">
                     <h3 class="card-title border-b border-gray-50 pb-4">Informações do Contrato</h3>
                     <div class="info-grid">
@@ -71,7 +69,6 @@
                     </div>
                 </div>
 
-                {{-- CARD: ATUALIZAR STATUS --}}
                 <div class="card-financeiro !mb-0">
                     <h3 class="card-title border-b border-gray-50 pb-4">Gerenciar Operação</h3>
                     <form action="{{ route('operacoes.atualizarStatus', $operacao->id) }}" method="POST" class="space-y-4 mt-4">
@@ -100,7 +97,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {{-- TABELA DE PARCELAS --}}
+                {{-- DETALHAMENTO DAS PARCELAS --}}
                 <div class="lg:col-span-2 card-financeiro !mb-0 !p-0">
                     <div class="px-6 py-4 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
                         <h3 class="text-xs font-black text-gray-800 uppercase tracking-widest">Plano de Pagamento</h3>
@@ -132,7 +129,6 @@
                     </table>
                 </div>
 
-                {{-- LOGS DE AUDITORIA --}}
                 <div class="card-financeiro !mb-0">
                     <h3 class="card-title border-b border-gray-50 pb-4">Histórico do Fluxo</h3>
                     <div class="mt-6 space-y-6">

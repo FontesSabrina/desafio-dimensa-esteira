@@ -4,6 +4,8 @@
             <tr>
                 <th>Código</th>
                 <th>Cliente</th>
+                <th>Produto</th>
+                <th>Conveniada</th>
                 <th class="text-right">Valor</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Ações</th>
@@ -16,8 +18,14 @@
                         {{ $op->codigo_operacao }}
                     </td>
                     <td>
-                        <div class="client-name">{{ $op->nome }}</div>
-                        <div class="client-cpf">{{ $op->cpf }}</div>
+                        <div class="client-name font-bold text-gray-800">{{ $op->nome }}</div>
+                        <div class="client-cpf text-xs text-gray-400">{{ $op->cpf }}</div>
+                    </td>
+                    <td class="text-xs font-semibold text-gray-600">
+                        {{ $op->produto }}
+                    </td>
+                    <td class="text-xs text-gray-500 italic">
+                        {{ $op->conveniada_nome ?? 'Não informada' }}
                     </td>
                     <td class="text-right font-mono font-black text-gray-900">
                         R$ {{ number_format($op->valor_requerido, 2, ',', '.') }}
@@ -27,6 +35,7 @@
                             $statusClass = match($op->status) {
                                 'PAGO AO CLIENTE' => 'badge-status-pago',
                                 'CANCELADA' => 'bg-red-50 text-red-600 border-red-100',
+                                'APROVADA' => 'bg-emerald-50 text-emerald-600 border-emerald-100',
                                 default => 'badge-status-processo'
                             };
                         @endphp
@@ -42,7 +51,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="table-empty-state">
+                    <td colspan="7" class="table-empty-state">
                         Nenhuma operação localizada.
                     </td>
                 </tr>

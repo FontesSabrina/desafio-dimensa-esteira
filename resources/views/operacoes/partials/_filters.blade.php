@@ -24,7 +24,28 @@
 
         <div class="filter-group">
             <label class="filter-label">Conveniada</label>
-            <input type="text" name="conveniada" value="{{ request('conveniada') }}" placeholder="Buscar..." class="input-financeiro">
+            <select name="conveniada" class="input-financeiro appearance-none select2-conveniada">
+                <option value="">TODAS AS CONVENIADAS</option>
+                @php
+                    $conveniadas = [
+                        'Cataguases' => 'Prefeitura de Cataguases',
+                        'Ponte Nova' => 'Prefeitura de Ponte Nova',
+                        'Ubá' => 'Prefeitura de Ubá',
+                        'Leopoldina' => 'Prefeitura de Leopoldina',
+                        'Goiânia' => 'Prefeitura de Goiânia',
+                        'Muriaé' => 'Prefeitura de Muriaé',
+                        'Viçosa' => 'Prefeitura de Viçosa',
+                        'Juiz de Fora' => 'Prefeitura de Juiz de Fora',
+                        'Belo Horizonte' => 'Prefeitura de Belo Horizonte',
+                        'Rio de Janeiro' => 'Prefeitura de Rio de Janeiro'
+                    ];
+                @endphp
+                @foreach($conveniadas as $valor => $nome)
+                    <option value="{{ $valor }}" {{ request('conveniada') == $valor ? 'selected' : '' }}>
+                        {{ $nome }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         <div class="filter-group">
