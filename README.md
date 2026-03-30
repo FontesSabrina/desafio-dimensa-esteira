@@ -1,6 +1,6 @@
-==============================================
+
 🚀 Gestão de Esteira Ativa - Desafio Dimensa
-==============================================
+
 
 Este sistema foi desenvolvido como parte do processo seletivo para a posição de **Analista I de Desenvolvimento de Software na Dimensa**.
 
