@@ -1,13 +1,10 @@
-Entendi perfeitamente, amiga! Você quer o texto "limpo", sem aquelas formatações de código (Markdown), mas com as linhas separando tudo para ficar bem organizado no visual.
-
-Aqui está o texto pronto para você copiar:
 
 🚀 Gestão de Esteira Ativa - Desafio Dimensa
 
 Este sistema foi desenvolvido como parte do processo seletivo para a posição de Analista I de Desenvolvimento de Software na Dimensa.
 
 A aplicação foca no processamento de alto volume de dados (50 mil registros) e na gestão eficiente de operações financeiras.
-
+________________________________________________________________________________________________________________________________________________________________
 🛠️ Tecnologias Utilizadas
 
 • Framework: PHP 8 / Laravel 12
@@ -15,7 +12,7 @@ A aplicação foca no processamento de alto volume de dados (50 mil registros) e
 • Frontend: Blade Engines, Tailwind CSS e Javascript
 • Servidor Local: Xampp (Apache/MySQL) e PHP Artisan
 • Ferramentas: Laravel Excel (para importação de alto volume)
-
+________________________________________________________________________________________________________________________________________________________________
 📥 Como Executar o Projeto
 
 Clonar o repositório:
@@ -51,12 +48,12 @@ php artisan migrate --seed
 
 Iniciar servidor:
 php artisan serve
-
+________________________________________________________________________________________________________________________________________________________________
 🔐 Credenciais de Acesso (Seed)
 
 • Usuário/E-mail: admin@admin.com
 • Senha: 12345678
-
+________________________________________________________________________________________________________________________________________________________________
 📊 Como Executar a Importação
 
 O sistema foi otimizado para suportar a carga de 50 mil registros:
@@ -70,25 +67,25 @@ Selecione um arquivo .xlsx ou .csv.
 Clique em "Processar Dados".
 
 ✔️ O sistema utiliza leitura em blocos (chunks) para garantir performance.
-
+________________________________________________________________________________________________________________________________________________________________
 🧠 Decisões Técnicas Tomadas
 
 • Cálculo de Valor Presente (VP): Implementado seguindo rigorosamente fórmulas de atraso e adiantamento.
 • Logs de Auditoria: Registro de todas as mudanças de status para rastreabilidade.
 • Regras de Status: O status "PAGO AO CLIENTE" só ocorre se a proposta estiver APROVADA e já tiver passado por ASSINATURA CONCLUÍDA.
 • Performance: Uso de paginação e consultas otimizadas para lidar com os 50 mil registros.
-
+________________________________________________________________________________________________________________________________________________________________
 ⚠️ Limitações da Solução
 
 • Processamento Síncrono: A importação ocorre de forma síncrona. Em produção, o ideal seria utilizar Queues (filas).
 • Interface: O foco principal foi a lógica de negócio e os critérios técnicos do desafio.
-
+________________________________________________________________________________________________________________________________________________________________
 📈 Melhorias Futuras
 
 [ ] Testes automatizados (principalmente cálculo de VP).
 [ ] Dashboard com gráficos e indicadores.
 [ ] Dockerização com Docker Compose.
-
+________________________________________________________________________________________________________________________________________________________________
 👩‍💻 Autora
 
 Desenvolvido por Sabrina Fontes
