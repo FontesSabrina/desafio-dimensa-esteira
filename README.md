@@ -1,89 +1,130 @@
+===========================================
 🚀 Gestão de Esteira Ativa - Desafio Dimensa
+===========================================
 
-Este sistema foi desenvolvido como parte do processo seletivo para a posição de Analista I de Desenvolvimento de Software na Dimensa.
+Este sistema foi desenvolvido como parte do processo seletivo para a posição de **Analista I de Desenvolvimento de Software na Dimensa**.
 
 A aplicação foca no processamento de alto volume de dados (50 mil registros) e na gestão eficiente de operações financeiras.
 
-🛠️ Tecnologias Utilizadas
+--------------------------------------------------------------------------------
 
-• Framework: PHP 8 / Laravel 12
-• Banco de Dados: MySQL
-• Frontend: Blade Engines, Tailwind CSS e Javascript
-• Servidor Local: Xampp (Apache/MySQL) e PHP Artisan
-• Ferramentas: Laravel Excel (para importação de alto volume)
+🛠️ Tecnologias Utilizadas
+-------------------------
+
+* **Framework:** PHP 8 / Laravel 12
+* **Banco de Dados:** MySQL
+* **Frontend:** Blade Engines, Tailwind CSS e Javascript
+* **Servidor Local:** Xampp (Apache/MySQL) e PHP Artisan
+* **Ferramentas:** Laravel Excel (para importação de alto volume)
+
+--------------------------------------------------------------------------------
 
 📥 Como Executar o Projeto
+-------------------------
 
-1. Clonar o repositório:
-git clone https://github.com/FontesSabrina/desafio-dimensa-esteira.git
-cd desafio-dimensa-esteira
+**1. Clonar o repositório:**
 
-2. Instalar dependências:
-composer install
-npm install
+.. code-block:: bash
 
-3. Compilar os ativos (CSS/JS):
+   git clone https://github.com/FontesSabrina/desafio-dimensa-esteira.git
+   cd desafio-dimensa-esteira
 
-• Desenvolvimento: npm run dev
-• Produção: npm run build
+**2. Instalar dependências:**
 
-4. Configurar Ambiente (Xampp):
+.. code-block:: bash
 
-• Inicie os módulos Apache e MySQL no Xampp.
-• Crie o banco de dados: dimensa_db
+   composer install
+   npm install
 
-5. Configurar arquivo .env:
+**3. Compilar os ativos (CSS/JS):**
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=dimensa_db
-DB_USERNAME=root
-DB_PASSWORD=
+* **Desenvolvimento:** ``npm run dev``
+* **Produção:** ``npm run build``
 
-6. Migrar e popular o banco:
-php artisan migrate --seed
+--------------------------------------------------------------------------------
 
-7. Iniciar servidor:
-php artisan serve
+**4. Configurar Ambiente (Xampp):**
+
+* Inicie os módulos Apache e MySQL no Xampp.
+* Crie o banco de dados: **dimensa_db**
+
+**5. Configurar arquivo .env:**
+
+.. code-block:: text
+
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=dimensa_db
+   DB_USERNAME=root
+   DB_PASSWORD=
+
+--------------------------------------------------------------------------------
+
+**6. Migrar e popular o banco:**
+
+.. code-block:: bash
+
+   php artisan migrate --seed
+
+**7. Iniciar servidor:**
+
+.. code-block:: bash
+
+   php artisan serve
+
+--------------------------------------------------------------------------------
 
 🔐 Credenciais de Acesso (Seed)
+------------------------------
 
-• Usuário/E-mail: admin@admin.com
-• Senha: 12345678
+* **Usuário/E-mail:** admin@admin.com
+* **Senha:** 12345678
+
+--------------------------------------------------------------------------------
 
 📊 Como Executar a Importação
+----------------------------
 
 O sistema foi otimizado para suportar a carga de 50 mil registros:
 
-Acesse a plataforma com as credenciais acima.
+1. Acesse a plataforma com as credenciais acima.
+2. No dashboard "Gestão de Esteira Ativa", localize o card de importação.
+3. Selecione um arquivo .xlsx ou .csv.
+4. Clique em "Processar Dados".
 
-No dashboard "Gestão de Esteira Ativa", localize o card de importação.
+*✔️ O sistema utiliza leitura em blocos (chunks) para garantir performance.*
 
-Selecione um arquivo .xlsx ou .csv.
-
-Clique em "Processar Dados".
-
-✔️ O sistema utiliza leitura em blocos (chunks) para garantir performance.
+--------------------------------------------------------------------------------
 
 🧠 Decisões Técnicas Tomadas
+---------------------------
 
-• Cálculo de Valor Presente (VP): Implementado seguindo rigorosamente fórmulas de atraso e adiantamento.
-• Logs de Auditoria: Registro de todas as mudanças de status para rastreabilidade.
-• Regras de Status: "PAGO AO CLIENTE" só ocorre se a proposta estiver APROVADA e já tiver passado por ASSINATURA CONCLUÍDA.
-• Performance: Uso de paginação e consultas otimizadas para lidar com os 50 mil registros.
+* **Cálculo de Valor Presente (VP):** Implementado seguindo rigorosamente fórmulas de atraso e adiantamento.
+* **Logs de Auditoria:** Registro de todas as mudanças de status para rastreabilidade.
+* **Regras de Status:** O status "PAGO AO CLIENTE" só ocorre se a proposta estiver APROVADA e já tiver passado por ASSINATURA CONCLUÍDA.
+* **Performance:** Uso de paginação e consultas otimizadas para lidar com os 50 mil registros.
+
+--------------------------------------------------------------------------------
 
 ⚠️ Limitações da Solução
+------------------------
 
-• Processamento Síncrono: A importação ocorre de forma síncrona. Em produção, o ideal seria utilizar Queues (filas).
-• Interface: O foco principal foi a lógica de negócio e os critérios técnicos do desafio.
+* **Processamento Síncrono:** A importação ocorre de forma síncrona. Em produção, o ideal seria utilizar Queues (filas).
+* **Interface:** O foco principal foi a lógica de negócio e os critérios técnicos do desafio.
+
+--------------------------------------------------------------------------------
 
 📈 Melhorias Futuras
+-------------------
 
-[ ] Testes automatizados (principalmente cálculo de VP).
-[ ] Dashboard com gráficos e indicadores.
-[ ] Dockerização com Docker Compose.
+* [ ] Testes automatizados (principalmente cálculo de VP).
+* [ ] Dashboard com gráficos e indicadores.
+* [ ] Dockerização com Docker Compose.
+
+--------------------------------------------------------------------------------
 
 👩‍💻 Autora
+----------
 
-Desenvolvido por Sabrina Fontes
+Desenvolvido por **Sabrina Fontes**
